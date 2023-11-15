@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1063517998599",
+    "project_id": "farajaapp-113c7",
+    "storage_bucket": "farajaapp-113c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063517998599:android:d80318caea5b5a6397a4a2",
+        "android_client_info": {
+          "package_name": "com.example.faraja_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI14VdbzyK3iV3NJ3Y3JTTvVqqUjVv2_U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base theme inheriting from Theme.AppCompat -->
+    <style name="Base.Theme.Faraja_App" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryVariant">@color/blue</item>
+        <item name="android:statusBarColor">@color/blue</item>
+    </style>
 
-    <style name="Theme.Faraja_App" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Your main theme, inheriting from the base theme -->
+    <style name="Theme.Faraja_App" parent="Base.Theme.Faraja_App"/>
 </resources>
