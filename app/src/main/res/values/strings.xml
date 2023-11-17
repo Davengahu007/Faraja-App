@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Faraja_App</string>
+    <string name="faraja">Faraja</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="signup">SIGNUP</string>
+    <string name="already_registered_login">Already registered? Login</string>
+    <string name="awaiting_email_verification">An email verification link has been sent to your account. Kindly verify and proceed to login</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="login">LOGIN</string>
+    <string name="not_yet_registered_sign_up">Not yet registered? Sign up</string>
+    <string name="proceed_to_login">Proceed to Login</string>
+    <string name="app_image_description">Page Image</string>
 </resources>
