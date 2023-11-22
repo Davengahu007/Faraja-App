@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -60,6 +61,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.faraja_app.ui.theme.Faraja_AppTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -292,13 +294,12 @@ fun HomeContainer() {
 
     NavBar(drawerState = drawerState)
 
-    if (drawerState.isClosed) {
+
         Switcher(
             opacity = switcherOpacity,
             onToggle = { option -> selectedOption = option }
         )
         Communities(communities = communityList, opacity = communitiesOpacity)
-    }
 }
 
 fun onDrawerItemClicked(item: String) {
