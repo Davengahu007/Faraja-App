@@ -19,11 +19,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -133,28 +135,42 @@ fun Switcher(
 }
 @Composable
 fun CommunityCard(community: Community) {
-    Row(
-        modifier = Modifier.padding(top = 85.dp, start = 15.dp)
-    ) {
-        Image(painter = painterResource(R.drawable.guitar), contentDescription = "Community profile picture", modifier = Modifier
-            .size(40.dp)
-            .clip(
-                CircleShape
-            )
-            .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Text(text = "Hello ${community.name}",
-                style = MaterialTheme.typography.titleSmall
+    Column {
+        Row(
+            modifier = Modifier.padding(top = 85.dp, start = 15.dp)
+        ) {
+            Image(painter = painterResource(R.drawable.guitar), contentDescription = "Community profile picture", modifier = Modifier
+                .size(40.dp)
+                .clip(
+                    CircleShape
                 )
-            Spacer(modifier = Modifier.height(3.dp))
-                Text(text = "Hello ${community.latestMessage}",
+                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(text = community.name,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(text = "${community.members} members",
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyMedium
                 )
+            }
+            Spacer(modifier = Modifier.width(140.dp))
+            ExtendedFloatingActionButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.height(30.dp)
+            ) {
+                Row {
+                    Icon(Icons.Filled.Add, contentDescription = "", modifier = Modifier.size(18.dp))
+                    Text(text = "Join", modifier = Modifier.padding(start = 10.dp))
+                }
+            }
         }
+        Text(text = community.description, modifier = Modifier.padding(16.dp, top = 8.dp, end = 25.dp), style = MaterialTheme.typography.bodySmall)
     }
+
 }
 
 @Composable
@@ -176,7 +192,7 @@ fun ToggleButton(
     }
 }
 
-data class Community(val name: String, val latestMessage: String)
+data class Community(val name: String, val members: String, val description: String)
 
 @Composable
 fun HomeContainer() {
@@ -184,15 +200,11 @@ fun HomeContainer() {
         mutableStateOf("Communities")
     }
 
-    val latestMessage by remember {
-        mutableStateOf("Nice")
-    }
-
     NavBar()
     Switcher { option ->
         selectedOption = option
     }
-    CommunityCard(community = Community("Fun", latestMessage))
+    CommunityCard(community = Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."))
 }
 
 fun onDrawerItemClicked(item: String) {
