@@ -1,14 +1,11 @@
 package com.example.faraja_app
 
-import android.graphics.drawable.Icon
 import android.os.Bundle
-import android.widget.ToggleButton
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,24 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -75,7 +64,9 @@ fun Drawer(
                             }
                         }
                     },
-                    modifier = Modifier.padding(top = 25.dp, start = 10.dp).size(38.dp)
+                    modifier = Modifier
+                        .padding(top = 25.dp, start = 10.dp)
+                        .size(38.dp)
 
                 ) {
                     Icon(Icons.Filled.Menu, contentDescription = "")
@@ -93,7 +84,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavBar() {
     Drawer()
@@ -133,6 +123,15 @@ fun Switcher(
 
     }
 }
+@Composable
+fun CommunityCard(community: Community) {
+    Row {
+        Column {
+            Text(text = "Hello ${community.name}")
+            Text(text = "Hello ${community.latestMessage}")
+        }
+    }
+}
 
 @Composable
 fun ToggleButton(
@@ -153,15 +152,23 @@ fun ToggleButton(
     }
 }
 
+data class Community(val name: String, val latestMessage: String)
+
 @Composable
 fun HomeContainer() {
     var selectedOption by remember {
         mutableStateOf("Communities")
     }
+
+    val latestMessage by remember {
+        mutableStateOf("Nice")
+    }
+
     NavBar()
     Switcher { option ->
         selectedOption = option
     }
+    CommunityCard(community = Community("Fun", latestMessage))
 }
 
 fun onDrawerItemClicked(item: String) {
