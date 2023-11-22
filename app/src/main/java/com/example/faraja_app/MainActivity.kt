@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -54,9 +56,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Drawer(
+fun Drawer(drawerState: DrawerState
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -96,9 +97,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar() {
-    Drawer()
+fun NavBar(drawerState: DrawerState) {
+    Drawer(drawerState = drawerState)
 }
 
 @Composable
@@ -137,9 +139,9 @@ fun Switcher(
 }
 @Composable
 fun CommunityCard(community: Community) {
-    Column {
+    Column(modifier = Modifier.clickable { /* To Do */ }) {
         Row(
-            modifier = Modifier.padding(top = 25.dp, start = 15.dp)
+            modifier = Modifier.padding(top = 15.dp, start = 15.dp)
         ) {
             Image(painter = painterResource(R.drawable.guitar), contentDescription = "Community profile picture", modifier = Modifier
                 .size(40.dp)
@@ -170,7 +172,7 @@ fun CommunityCard(community: Community) {
                 }
             }
         }
-        Text(text = community.description, modifier = Modifier.padding(16.dp, top = 8.dp, end = 25.dp), style = MaterialTheme.typography.bodySmall)
+        Text(text = community.description, modifier = Modifier.padding(16.dp, top = 8.dp, end = 25.dp, bottom = 10.dp), style = MaterialTheme.typography.bodySmall)
     }
 
 }
@@ -205,6 +207,7 @@ fun ToggleButton(
 
 data class Community(val name: String, val members: String, val description: String)
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContainer() {
     var selectedOption by remember {
@@ -212,20 +215,64 @@ fun HomeContainer() {
     }
 
     val communityList = listOf(
-        Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected.")
-        ,Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."), Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."),
-        Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."), Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."),
-        Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."), Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."),
-        Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."), Community("Fun", "404", "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
+        Community(
+            "Fun",
+            "404",
+            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
+        ),
 
         )
 
-    NavBar()
-    Switcher { option ->
-        selectedOption = option
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    if (drawerState.isClosed) {
+        Switcher { option ->
+            selectedOption = option
+        }
+        Communities(communities = communityList)
     }
-    Communities(communities = communityList)
-    }
+    NavBar(drawerState = drawerState)
+}
 
 fun onDrawerItemClicked(item: String) {
     when (item) {
