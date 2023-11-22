@@ -3,6 +3,14 @@ package com.example.faraja_app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -105,37 +113,45 @@ fun NavBar(drawerState: DrawerState) {
 
 @Composable
 fun Switcher(
+    opacity: Float,
     onToggle: (String) -> Unit
 ) {
     var selectedOption by remember { mutableStateOf("Communities") }
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(18.dp),
-        horizontalArrangement = Arrangement.Center
+    AnimatedVisibility(
+        visible = opacity > 0,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
     ) {
-        ToggleButton(
-            text = "Communities",
-            selected = selectedOption == "Communities",
-            onToggle = {
-                selectedOption = "Communities"
-                onToggle(selectedOption)
-            }
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(18.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            ToggleButton(
+                text = "Communities",
+                selected = selectedOption == "Communities",
+                onToggle = {
+                    selectedOption = "Communities"
+                    onToggle(selectedOption)
+                }
+            )
 
-        Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
-        ToggleButton(
-            text = "Counselors",
-            selected = selectedOption == "Counselors",
-            onToggle = {
-                selectedOption = "Counselors"
-                onToggle(selectedOption)
-            }
-        )
+            ToggleButton(
+                text = "Counselors",
+                selected = selectedOption == "Counselors",
+                onToggle = {
+                    selectedOption = "Counselors"
+                    onToggle(selectedOption)
+                }
+            )
 
+        }
     }
+
 }
 @Composable
 fun CommunityCard(community: Community) {
@@ -178,10 +194,16 @@ fun CommunityCard(community: Community) {
 }
 
 @Composable
-fun Communities(communities: List<Community>) {
-    LazyColumn(modifier = Modifier.padding(top = 75.dp)) {
-        items(communities) {
-            community -> CommunityCard(community = community)
+fun Communities(communities: List<Community>, opacity: Float) {
+    AnimatedVisibility(
+        visible = opacity > 0,
+        enter = fadeIn() + expandHorizontally(),
+        exit = fadeOut() + shrinkHorizontally()
+    ) {
+        LazyColumn(modifier = Modifier.padding(top = 75.dp)) {
+            items(communities) { community ->
+                CommunityCard(community = community)
+            }
         }
     }
 }
@@ -265,13 +287,18 @@ fun HomeContainer() {
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    if (drawerState.isClosed) {
-        Switcher { option ->
-            selectedOption = option
-        }
-        Communities(communities = communityList)
-    }
+    val switcherOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
+    val communitiesOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
+
     NavBar(drawerState = drawerState)
+
+    if (drawerState.isClosed) {
+        Switcher(
+            opacity = switcherOpacity,
+            onToggle = { option -> selectedOption = option }
+        )
+        Communities(communities = communityList, opacity = communitiesOpacity)
+    }
 }
 
 fun onDrawerItemClicked(item: String) {
