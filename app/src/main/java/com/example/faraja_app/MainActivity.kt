@@ -106,7 +106,7 @@ fun NavigationSection(
                 // Communities Button with fixed width
                 Button(
                     onClick = { navController.navigate("mycommunities") },
-                    modifier = Modifier.widthIn(min = 110.dp)
+                    modifier = Modifier.widthIn(min = 140.dp)
                 ) {
                     Text("My Communities")
                 }
@@ -116,7 +116,7 @@ fun NavigationSection(
                 // Counselors Button with fixed width
                 Button(
                     onClick = { navController.navigate("counselors") },
-                    modifier = Modifier.widthIn(min = 110.dp)
+                    modifier = Modifier.widthIn(min = 140.dp)
                 ) {
                     Text("Counselors")
                 }
@@ -222,7 +222,7 @@ fun NavBar(drawerState: DrawerState) {
     val coroutineScope = rememberCoroutineScope() // Create a CoroutineScope
 
     TopAppBar(
-        title = { /* No title here */ },
+        title = { "Faraja" },
         navigationIcon = {
             IconButton(onClick = {
                 coroutineScope.launch {
@@ -240,43 +240,6 @@ fun NavBar(drawerState: DrawerState) {
         // You can add other AppBar configurations if necessary
     )
 }
-
-@Composable
-fun Switcher(
-    opacity: Float,
-    onToggle: (option: String) -> Unit
-) {
-    var selectedOption by remember { mutableStateOf("Communities") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .alpha(opacity),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            ToggleButton(
-                text = "Communities",
-                selected = selectedOption == "Communities",
-                onToggle = { selectedOption = "Communities"; onToggle("Communities") }
-            )
-
-            Spacer(Modifier.width(8.dp))
-
-            ToggleButton(
-                text = "Counselors",
-                selected = selectedOption == "Counselors",
-                onToggle = { selectedOption = "Counselors"; onToggle("Counselors") }
-            )
-        }
-    }
-}
-
 
 
 @Composable
