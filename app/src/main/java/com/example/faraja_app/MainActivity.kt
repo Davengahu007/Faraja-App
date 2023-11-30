@@ -4,24 +4,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,15 +31,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,51 +47,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.faraja_app.ui.theme.Faraja_AppTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Drawer(drawerState: DrawerState
-) {
-    val scope = rememberCoroutineScope()
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet { /* Drawer content */ }
-        },
-    ) {
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopStart
-        ) {
-
-                FloatingActionButton(
-                    onClick = {
-                        scope.launch {
-                            drawerState.apply {
-                                if (isClosed) open() else close()
-                            }
-                        }
-                    },
-                    modifier = Modifier
-                        .padding(top = 25.dp, start = 10.dp)
-                        .size(38.dp)
-
-                ) {
-                    Icon(Icons.Filled.Menu, contentDescription = "")
-                }
-            }
-    }
-}
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,52 +70,89 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun HomeContainer() {
+    var selectedOption by remember { mutableStateOf("Communities") }
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val switcherOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
+    val communitiesOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
+
+    NavBar(drawerState = drawerState)
+
+    Switcher(
+        opacity = switcherOpacity,
+        onToggle = { option -> selectedOption = option }
+    )
+
+    // Here we use CommunityData.communityList from the separate file
+    Communities(communities = CommunityData.communityList, opacity = communitiesOpacity)
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun NavBar(drawerState: DrawerState) {
-    Drawer(drawerState = drawerState)
+    val coroutineScope = rememberCoroutineScope() // Create a CoroutineScope
+
+    TopAppBar(
+        title = { /* No title here */ },
+        navigationIcon = {
+            IconButton(onClick = {
+                coroutineScope.launch {
+                    // Toggle the drawer state
+                    if (drawerState.isClosed) {
+                        drawerState.open() // Open the drawer
+                    } else {
+                        drawerState.close() // Close the drawer
+                    }
+                }
+            }) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu") // Replace with your desired icon
+            }
+        }
+        // You can add other AppBar configurations if necessary
+    )
 }
 
 @Composable
 fun Switcher(
     opacity: Float,
-    onToggle: (String) -> Unit
+    onToggle: (option: String) -> Unit
 ) {
     var selectedOption by remember { mutableStateOf("Communities") }
 
-    AnimatedVisibility(
-        visible = opacity > 0,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(opacity),
+        verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(18.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             ToggleButton(
                 text = "Communities",
                 selected = selectedOption == "Communities",
-                onToggle = {
-                    selectedOption = "Communities"
-                    onToggle(selectedOption)
-                }
+                onToggle = { selectedOption = "Communities"; onToggle("Communities") }
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(Modifier.width(8.dp))
 
             ToggleButton(
                 text = "Counselors",
                 selected = selectedOption == "Counselors",
-                onToggle = {
-                    selectedOption = "Counselors"
-                    onToggle(selectedOption)
-                }
+                onToggle = { selectedOption = "Counselors"; onToggle("Counselors") }
             )
-
         }
     }
-
 }
+
+
+
+
 @Composable
 fun CommunityCard(community: Community) {
     Column(modifier = Modifier.clickable { /* To Do */ }) {
@@ -229,86 +227,6 @@ fun ToggleButton(
     }
 }
 
-data class Community(val name: String, val members: String, val description: String)
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeContainer() {
-    var selectedOption by remember {
-        mutableStateOf("Communities")
-    }
-
-    val communityList = listOf(
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-        Community(
-            "Fun",
-            "404",
-            "This is a humble community of individuals who share a common passion for learning and growth. In this welcoming space, we encourage open dialogue, collaboration, and the exchange of ideas. Whether you're a seasoned expert or a newcomer eager to explore, everyone's perspective is valued and respected."
-        ),
-
-        )
-
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
-    val switcherOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
-    val communitiesOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
-
-    NavBar(drawerState = drawerState)
-
-
-        Switcher(
-            opacity = switcherOpacity,
-            onToggle = { option -> selectedOption = option }
-        )
-        Communities(communities = communityList, opacity = communitiesOpacity)
-}
-
-fun onDrawerItemClicked(item: String) {
-    when (item) {
-        "Item 1" -> {
-
-        }
-    }
-}
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
