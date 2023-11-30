@@ -1,5 +1,6 @@
 package com.example.faraja_app
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +11,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -31,13 +34,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
@@ -51,10 +54,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.faraja_app.ui.theme.Faraja_AppTheme
 import kotlinx.coroutines.launch
 
@@ -63,30 +69,150 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeContainer()
+            Faraja_AppTheme {
+
+                val navController = rememberNavController()
+
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") { HomeScreen(navController) }
+                    composable("mycommunities") { MyCommunitiesScreen(navController) }
+                    composable("counselors") {CounselorsScreen(navController) }
+                    composable("newcommunities") { NewCommunitiesScreen(navController)}
+
+                }
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-fun HomeContainer() {
-    var selectedOption by remember { mutableStateOf("Communities") }
+fun NavigationSection(
+    navController: NavHostController,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit
+) {
+    TopAppBar(
+        title = { /* No title here */ },
+        navigationIcon = {
+            IconButton(onClick = { /* Handle drawer opening */ }) {
+                Icon(Icons.Filled.Menu, contentDescription = "Menu")
+            }
+        },
+        actions = {
+            Row(Modifier.fillMaxWidth()) {
+                Spacer(Modifier.weight(1f)) // Spacer before the buttons
 
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val switcherOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
-    val communitiesOpacity by animateFloatAsState(if (drawerState.isClosed) 1f else 0f, label = "")
+                // Communities Button with fixed width
+                Button(
+                    onClick = { navController.navigate("mycommunities") },
+                    modifier = Modifier.widthIn(min = 110.dp)
+                ) {
+                    Text("My Communities")
+                }
 
-    NavBar(drawerState = drawerState)
+                Spacer(Modifier.width(8.dp)) // Spacer between buttons
 
-    Switcher(
-        opacity = switcherOpacity,
-        onToggle = { option -> selectedOption = option }
+                // Counselors Button with fixed width
+                Button(
+                    onClick = { navController.navigate("counselors") },
+                    modifier = Modifier.widthIn(min = 110.dp)
+                ) {
+                    Text("Counselors")
+                }
+
+                Spacer(Modifier.weight(1f)) // Spacer after the buttons
+            }
+        }
     )
+}
 
-    // Here we use CommunityData.communityList from the separate file
-    Communities(communities = CommunityData.communityList, opacity = communitiesOpacity)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun HomeScreen(navController: NavHostController) {
+    var selectedOption by remember { mutableStateOf("My Communities") }
+
+    Scaffold(
+        topBar = {
+            NavigationSection(
+                navController = navController,
+                selectedOption = selectedOption,
+                onOptionSelected = { option ->
+                    selectedOption = option
+                    if (option == "My Communities") {
+                        // Navigate to Communities screen
+                        navController.navigate("mycommunities")
+                    }
+                }
+            )
+        }
+    ) {
+        // Rest of your HomeScreen content
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun MyCommunitiesScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            NavigationSection(
+                navController = navController,
+                selectedOption = "My Communities",
+                onOptionSelected = { /* Handle option selection */ }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("newcommunities")},
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
+            }
+        }
+    ) {
+        // Content of your Communities page
+    }
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun CounselorsScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            NavigationSection(
+                navController = navController,
+                selectedOption = "Counselors",
+                onOptionSelected = { /* Handle option selection */ }
+            )
+        }
+    ) {
+
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun NewCommunitiesScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            NavigationSection(
+                navController = navController,
+                selectedOption = "New Communities",
+                onOptionSelected = { /* Handle option selection */ }
+            )
+        }
+    ) {
+
+    }
 }
 
 
