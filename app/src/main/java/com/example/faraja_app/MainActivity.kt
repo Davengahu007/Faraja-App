@@ -211,9 +211,10 @@ fun NewCommunitiesScreen(navController: NavHostController) {
             )
         }
     ) {
-
+        Communities(CommunityData.communityList, 1f) // Use the existing community list
     }
 }
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
