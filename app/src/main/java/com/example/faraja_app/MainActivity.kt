@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
 fun HomeContainer() {
     var selectedOption by remember { mutableStateOf("Communities") }
@@ -152,7 +153,6 @@ fun Switcher(
 
 
 
-
 @Composable
 fun CommunityCard(community: Community) {
     Column(modifier = Modifier.clickable { /* To Do */ }) {
@@ -227,19 +227,3 @@ fun ToggleButton(
     }
 }
 
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Faraja_AppTheme {
-        Greeting("Android")
-    }
-}
