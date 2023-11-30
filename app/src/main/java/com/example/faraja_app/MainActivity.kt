@@ -243,6 +243,8 @@ fun NavBar(drawerState: DrawerState) {
 }
 
 
+
+
 @Composable
 fun CommunityCard(community: Community) {
     Column(modifier = Modifier.clickable { /* To Do */ }) {
