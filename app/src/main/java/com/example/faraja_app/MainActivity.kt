@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,6 +51,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -78,6 +80,7 @@ class MainActivity : ComponentActivity() {
                     composable("mycommunities") { MyCommunitiesScreen(navController) }
                     composable("counselors") {CounselorsScreen(navController) }
                     composable("newcommunities") { NewCommunitiesScreen(navController)}
+                    composable("currentcommunity") { CurrentCommunityScreen(navController)}
 
                 }
             }
@@ -168,7 +171,7 @@ fun MyCommunitiesScreen(navController: NavHostController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("newcommunities")},
+                onClick = { navController.navigate("newcommunities") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White
             ) {
@@ -176,9 +179,87 @@ fun MyCommunitiesScreen(navController: NavHostController) {
             }
         }
     ) {
-        // Content of your Communities page
+        CommunitiesClickable(CommunityData.communityList, navController)
     }
 }
+
+
+@Composable
+fun CommunitiesClickable(communities: List<Community>, navController: NavHostController) {
+    LazyColumn(modifier = Modifier.padding(top = 75.dp)) {
+        items(communities) { community ->
+            CommunityCardClickable(community = community) {
+                // Navigate to the CurrentCommunityScreen when a card is clicked
+                navController.navigate("currentcommunity")
+            }
+        }
+    }
+}
+
+
+@Composable
+fun CommunityCardClickable(community: Community, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Image(
+                painter = painterResource(R.drawable.guitar), // Replace with actual image resource or painter
+                contentDescription = "Community profile picture",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically)
+            ) {
+                Text(
+                    text = community.name,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "${community.members} members",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = community.description,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+    }
+}
+
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun CurrentCommunityScreen(navController: NavHostController) {
+    Scaffold(
+        topBar = {
+            NavigationSection(
+                navController = navController,
+                selectedOption = "Current Community",
+                onOptionSelected = { /* Handle option selection */ }
+            )
+        }
+    ) {
+
+    }
+}
+
 
 
 
