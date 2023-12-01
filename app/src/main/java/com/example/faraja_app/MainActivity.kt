@@ -294,7 +294,7 @@ fun CounselorCard(counselor: Counselor) {
 }
 
 @Composable
-fun Counselors(counselors: List<Counselor>) {
+fun Counselors(counselors: List<Counselor>, onCounselorSelected: (Counselor) -> Unit) {
     // Sort counselors based on lastMessageTime
     val sortedCounselors = counselors.sortedByDescending { it.lastMessageTime }
 
@@ -321,7 +321,10 @@ fun CounselorsScreen(navController: NavHostController) {
             )
         }
     ) {
-        Counselors(counselors = CounselorData.counselorList)
+        Counselors(counselors = CounselorData.counselorList) { selectedCounselor ->
+            // Navigate to the ChatScreen with the selected counselor
+            navController.navigate("chat/${selectedCounselor.name}")
+        }
     }
 }
 
@@ -445,4 +448,3 @@ fun ToggleButton(
 
     }
 }
-
