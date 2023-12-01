@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "mucommunities") {
+                NavHost(navController = navController, startDestination = "mycommunities") {
                     composable("mycommunities") { MyCommunitiesScreen(navController) }
                     composable("counselors") {CounselorsScreen(navController) }
                     composable("newcommunities") { NewCommunitiesScreen(navController)}
