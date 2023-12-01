@@ -179,16 +179,16 @@ fun MyCommunitiesScreen(navController: NavHostController) {
             }
         }
     ) {
-        CommunitiesClickable(CommunityData.communityList, navController)
+        CommunitiesClickable(MyCommunityData.MycommunityList, navController)
     }
 }
 
 
 @Composable
-fun CommunitiesClickable(communities: List<Community>, navController: NavHostController) {
+fun CommunitiesClickable(myCommunities: List<MyCommunity>, navController: NavHostController) {
     LazyColumn(modifier = Modifier.padding(top = 75.dp)) {
-        items(communities) { community ->
-            CommunityCardClickable(community = community) {
+        items(myCommunities) { myCommunity ->
+            CommunityCardClickable(myCommunity = myCommunity) {
                 // Navigate to the CurrentCommunityScreen when a card is clicked
                 navController.navigate("currentcommunity")
             }
@@ -197,8 +197,9 @@ fun CommunitiesClickable(communities: List<Community>, navController: NavHostCon
 }
 
 
+
 @Composable
-fun CommunityCardClickable(community: Community, onClick: () -> Unit) {
+fun CommunityCardClickable(myCommunity: MyCommunity, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .clickable(onClick = onClick)
@@ -221,18 +222,18 @@ fun CommunityCardClickable(community: Community, onClick: () -> Unit) {
                     .align(Alignment.CenterVertically)
             ) {
                 Text(
-                    text = community.name,
+                    text = myCommunity.name, // lowercase 'm' in myCommunity
                     style = MaterialTheme.typography.titleSmall
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${community.members} members",
+                    text = "${myCommunity.members} members", // lowercase 'm' in myCommunity
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = community.description,
+                    text = myCommunity.description, // lowercase 'm' in myCommunity
                     style = MaterialTheme.typography.bodySmall
                 )
             }
