@@ -61,12 +61,12 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha10")
-    implementation ("androidx.compose.material:material:1.1.0")
+    implementation ("androidx.navigation:navigation-compose:2.7.5")
+    implementation ("androidx.compose.material:material:1.5.4")
 
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
-        //firebase dependencies
+    //firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
