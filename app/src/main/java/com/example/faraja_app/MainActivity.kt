@@ -5,16 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +31,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
@@ -44,20 +40,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -65,6 +57,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.faraja_app.ui.theme.Faraja_AppTheme
 import kotlinx.coroutines.launch
+import androidx.compose.ui.Alignment
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -179,7 +173,7 @@ fun MyCommunitiesScreen(navController: NavHostController) {
             }
         }
     ) {
-        CommunitiesClickable(MyCommunityData.MycommunityList, navController)
+        CommunitiesClickable(myCommunities = MyCommunityData.MycommunityList, navController = navController)
     }
 }
 
@@ -261,6 +255,56 @@ fun CurrentCommunityScreen(navController: NavHostController) {
     }
 }
 
+@Composable
+fun CounselorCard(counselor: Counselor) {
+    Column(
+        modifier = Modifier
+            .clickable { /* Handle click on counselor */ }
+            .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(counselor.profilePictureResId),
+                contentDescription = "Counselor profile picture",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(text = counselor.name, style = MaterialTheme.typography.titleSmall)
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(
+                    text = counselor.lastMessage,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = counselor.lastMessageTime,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Composable
+fun Counselors(counselors: List<Counselor>, onCounselorSelected: (Counselor) -> Unit) {
+    // Sort counselors based on lastMessageTime
+    val sortedCounselors = counselors.sortedByDescending { it.lastMessageTime }
+
+    LazyColumn {
+        items(sortedCounselors) { counselor ->
+            CounselorCard(counselor = counselor)
+        }
+    }
+}
+
 
 
 
@@ -277,9 +321,13 @@ fun CounselorsScreen(navController: NavHostController) {
             )
         }
     ) {
-
+        Counselors(counselors = CounselorData.counselorList) { selectedCounselor ->
+            // Navigate to the ChatScreen with the selected counselor
+            navController.navigate("chat/${selectedCounselor.name}")
+        }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -400,4 +448,3 @@ fun ToggleButton(
 
     }
 }
-
