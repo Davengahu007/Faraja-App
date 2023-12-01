@@ -41,11 +41,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -69,8 +67,7 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") { HomeScreen(navController) }
+                NavHost(navController = navController, startDestination = "mucommunities") {
                     composable("mycommunities") { MyCommunitiesScreen(navController) }
                     composable("counselors") {CounselorsScreen(navController) }
                     composable("newcommunities") { NewCommunitiesScreen(navController)}
@@ -122,32 +119,6 @@ fun NavigationSection(
             }
         }
     )
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Composable
-fun HomeScreen(navController: NavHostController) {
-    var selectedOption by remember { mutableStateOf("My Communities") }
-
-    Scaffold(
-        topBar = {
-            NavigationSection(
-                navController = navController,
-                selectedOption = selectedOption,
-                onOptionSelected = { option ->
-                    selectedOption = option
-                    if (option == "My Communities") {
-                        // Navigate to Communities screen
-                        navController.navigate("mycommunities")
-                    }
-                }
-            )
-        }
-    ) {
-        // Rest of your HomeScreen content
-    }
 }
 
 
