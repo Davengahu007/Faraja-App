@@ -346,8 +346,6 @@ fun Counselors(counselors: List<Counselor>, navController: NavHostController) {
         }
     }
 }
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
