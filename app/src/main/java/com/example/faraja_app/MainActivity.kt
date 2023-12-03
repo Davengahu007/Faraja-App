@@ -211,9 +211,6 @@ fun CommunityCardClickable(myCommunity: MyCommunity, onClick: () -> Unit) {
     }
 }
 
-
-
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -234,11 +231,17 @@ fun CurrentCommunityScreen(navController: NavHostController) {
 @Composable
 fun StoryList(stories: List<Stories>) {
     LazyColumn {
+        item {
+            Spacer(modifier = Modifier.height(60.dp))  // Adjust the height as needed
+        }
+
+        // Then list the stories
         items(stories) { story ->
             StoryCard(story)
         }
     }
 }
+
 
 @Composable
 fun StoryCard(story: Stories) {
@@ -362,7 +365,6 @@ fun NewCommunitiesScreen(navController: NavHostController) {
         Communities(CommunityData.communityList, 1f) // Use the existing community list
     }
 }
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
