@@ -12,6 +12,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,10 +27,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -209,8 +214,8 @@ fun CommunityCardClickable(myCommunity: MyCommunity, onClick: () -> Unit) {
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentCommunityScreen(navController: NavHostController) {
     Scaffold(
@@ -222,9 +227,51 @@ fun CurrentCommunityScreen(navController: NavHostController) {
             )
         }
     ) {
-
+        StoryList(StoriesData.storyList)
     }
 }
+
+@Composable
+fun StoryList(stories: List<Stories>) {
+    LazyColumn {
+        items(stories) { story ->
+            StoryCard(story)
+        }
+    }
+}
+
+@Composable
+fun StoryCard(story: Stories) {
+    Card(
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = story.username, style = MaterialTheme.typography.titleMedium)
+            Text(text = story.community, style = MaterialTheme.typography.bodySmall)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = story.description, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            StoryActions()
+        }
+    }
+}
+
+@Composable
+fun StoryActions() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Icon(Icons.Default.FavoriteBorder, contentDescription = "Like")
+        Icon(Icons.Default.Add, contentDescription = "Repost")
+        Icon(Icons.Default.Email, contentDescription = "Comment")
+        Icon(Icons.Default.Share, contentDescription = "Share")
+    }
+}
+
 
 @Composable
 fun CounselorCard(counselor: Counselor) {
