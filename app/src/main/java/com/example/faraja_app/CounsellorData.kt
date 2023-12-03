@@ -31,7 +31,7 @@ object CounselorData {
             lastMessageTime = "1:34",
             chatMessages = listOf(
                 ChatMessage("1", "Hello!", 1638561853000), // Sample chat messages
-                ChatMessage("2", "Hi there!", 1638561898000)
+                ChatMessage("2", "How has your day been?", 1638561898000)
                 // Add more chat messages as needed
             )
         ),
@@ -43,7 +43,7 @@ object CounselorData {
             lastMessageTime = "09:12",
             chatMessages = listOf(
                 ChatMessage("1", "Hello!", 1638561853000), // Sample chat messages
-                ChatMessage("2", "Hi there!", 1638561898000)
+                ChatMessage("2", "Feeling better today", 1638561898000)
                 // Add more chat messages as needed
             )
         ),
@@ -55,7 +55,7 @@ object CounselorData {
             lastMessageTime = "12:18",
             chatMessages = listOf(
                 ChatMessage("1", "Hello!", 1638561853000), // Sample chat messages
-                ChatMessage("2", "Hi there!", 1638561898000)
+                ChatMessage("2", "How can I help you?", 1638561898000)
                 // Add more chat messages as needed
             )
         ),
