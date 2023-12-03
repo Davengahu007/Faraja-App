@@ -14,5 +14,6 @@
     <string name="proceed_to_login">Proceed to Login</string>
     <string name="app_image_description">Page Image</string>
     <string name="default_web_client_id">default_web_client_id</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +62,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.faraja_app.ui.theme.Faraja_AppTheme
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.filled.ArrowBack
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +86,19 @@ class MainActivity : ComponentActivity() {
                     composable("counselors") {CounselorsScreen(navController) }
                     composable("newcommunities") { NewCommunitiesScreen(navController)}
                     composable("currentcommunity") { CurrentCommunityScreen(navController)}
-
+                    composable("counselorchat") { CounselorChat(navController = navController)}
+                    composable(
+                        "counselorchat/{counselorId}",
+                        arguments = listOf(navArgument("counselorId") { type = NavType.StringType })
+                    ) { backStackEntry ->
+                        val counselorId = backStackEntry.arguments?.getString("counselorId")
+                        if (counselorId != null) {
+                            CounselorChat(navController)
+                        } else {
+                            // Handle the case when counselorId is null
+                            // You may want to show an error message or navigate back
+                        }
+                    }
                 }
             }
         }
@@ -275,13 +296,13 @@ fun StoryActions() {
     }
 }
 
-
 @Composable
-fun CounselorCard(counselor: Counselor) {
+fun CounselorCard(counselor: Counselor, onClick: (String) -> Unit) {
     Column(
         modifier = Modifier
-            .clickable { /* Handle click on counselor */ }
+            .clickable(onClick = { onClick(counselor.id) })
             .padding(16.dp)
+            .fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -315,18 +336,16 @@ fun CounselorCard(counselor: Counselor) {
 }
 
 @Composable
-fun Counselors(counselors: List<Counselor>, onCounselorSelected: (Counselor) -> Unit) {
-    // Sort counselors based on lastMessageTime
-    val sortedCounselors = counselors.sortedByDescending { it.lastMessageTime }
-
+fun Counselors(counselors: List<Counselor>, navController: NavHostController) {
     LazyColumn {
-        items(sortedCounselors) { counselor ->
-            CounselorCard(counselor = counselor)
+        items(counselors) { counselor ->
+            CounselorCard(counselor = counselor) {
+                // Pass the counselor's ID as a route parameter
+                navController.navigate("counselorchat/${it}")
+            }
         }
     }
 }
-
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -342,11 +361,163 @@ fun CounselorsScreen(navController: NavHostController) {
             )
         }
     ) {
-        Counselors(counselors = CounselorData.counselorList) { selectedCounselor ->
-            // Navigate to the ChatScreen with the selected counselor
-            navController.navigate("chat/${selectedCounselor.name}")
+        Counselors(counselors = CounselorData.counselorList, navController = navController)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun CounselorChat(navController: NavHostController) {
+    // Get the counselor ID from the navigation arguments
+    val counselorId: String? = navController.currentBackStackEntry?.arguments?.getString("counselorId")
+
+    // Use the counselorId to get the specific counselor from your data
+    val selectedCounselor: Counselor? = CounselorData.counselorList.find { it.id == counselorId }
+
+    Scaffold(
+    ) {
+        // Display the counselor chat content
+        if (selectedCounselor != null) {
+            CounselorChatContent(selectedCounselor = selectedCounselor, navController = navController)
+        } else {
+            // Handle the case when selectedCounselor is null
+            // You may want to show an error message or navigate back
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CounselorChatContent(
+    selectedCounselor: Counselor,
+    navController: NavHostController
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 16.dp) // Add bottom padding for elevation effect
+    ) {
+        // TopAppBar with a back arrow
+        TopAppBar(
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(selectedCounselor.profilePictureResId),
+                        contentDescription = "Counselor profile picture",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .clip(CircleShape)
+                            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = selectedCounselor.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.CenterStart)
+                    )
+                }
+            },
+            navigationIcon = {
+                // Back arrow icon to navigate back to the Counselors screen
+                IconButton(
+                    onClick = {
+                        navController.popBackStack()
+                    }
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp, 8.dp)
+        )
+
+        // Display chat messages using LazyColumn
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            items(selectedCounselor.chatMessages) { message ->
+                ChatMessageItem(message = message)
+            }
+        }
+
+        // Input field for sending new messages
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp) // Adjust padding
+        ) {
+            // Image icon
+            IconButton(
+                onClick = { /* Handle image icon click */ },
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(4.dp)
+            ) {
+                val imageIconPainter = painterResource(R.drawable.image)
+                Icon(painter = imageIconPainter, contentDescription = "Imaged")
+            }
+
+            // BasicTextField with rounded edges
+            BasicTextField(
+                value = "Type a message...",
+                onValueChange = { /* Handle text input change */ },
+                textStyle = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .weight(1f)
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(16.dp) // Add rounded corners
+                    )
+                    .border(
+                        width = 2.dp, // Specify the width of the border
+                        color = MaterialTheme.colorScheme.primary, // Specify the color of the border
+                        shape = RoundedCornerShape(16.dp) // Match the shape of the background
+                    )
+                    .padding(8.dp)
+            )
+            // Audio icon
+            IconButton(
+                onClick = { /* Handle audio icon click */ },
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(4.dp)
+            ) {
+                val audioIconPainter = painterResource(R.drawable.mic)
+                Icon(painter = audioIconPainter, contentDescription = "Audio")
+            }
+
+            // Send button
+            IconButton(
+                onClick = { /* Handle send button click */ },
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(4.dp)
+            ) {
+                val sendIconPainter = painterResource(R.drawable.send)
+                Icon(painter = sendIconPainter, contentDescription = "Send")
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatMessageItem(message: ChatMessage) {
+    // Customize the appearance of each chat message item
+    Text(
+        text = message.message,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
